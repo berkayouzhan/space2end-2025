@@ -2,7 +2,7 @@
 
 **NASA Space Apps Challenge 2025 - Impactor-2025 Challenge**
 
-Asteroid çarpma simülasyonu ve görselleştirme aracı. Kullanıcılar asteroid parametrelerini ayarlayabilir, çarpma etkilerini görebilir ve "Dünya'yı Savun" moduyla kinetik savunma stratejilerini test edebilir.
+Asteroid çarpma simülasyonu ve görselleştirme aracı. Kullanıcılar asteroid parametrelerini ayarlayabilir, gerçek NASA verileriyle çarpma etkilerini analiz edebilir ve gelişmiş fizik modelleriyle risk değerlendirmesi yapabilir.
 
 ---
 
@@ -12,12 +12,15 @@ Asteroid çarpma simülasyonu ve görselleştirme aracı. Kullanıcılar asteroi
 - **Veri Kaynağı Seçimi**: 🌐 Canlı NASA API verileri veya 💾 Önyüklenmiş veritabanı
 - **NASA NEO API Entegrasyonu**: Gerçek asteroid verileri
 - **30+ Asteroid Veritabanı**: Güneş sistemi asteroitleri, kuyruklu yıldızlar ve tarihi çarpmalar
-- **3D Yörünge Simülasyonu**: Three.js ile interaktif 3D görselleştirme
+- **NASA Eyes Solar System**: İnteraktif 3D güneş sistemi görselleştirmesi
 - **2D Çarpma Haritası**: Leaflet.js ile gerçek dünya haritası üzerinde etki gösterimi
+- **3D Krater Görselleştirmesi**: Plotly.js ile topografik krater modeli ve kesit görünümü
+- **USGS Haritaları**: Topografik ve uydu görüntülü harita katmanları
 - **Fizik Hesaplamaları**: 
   - Kinetik enerji hesaplama
   - Krater boyutu tahmini
   - Sismik etki analizi
+  - Atmosferik giriş ve ablasyon
 - **🆕 Rumpf Metodolojisi**: Gelişmiş risk değerlendirmesi (7 tehlike türü)
   - Aşırı Basınç, Rüzgar, Termal Radyasyon, Sismik, Ejekta, Kraterleşme, Tsunami
   - Grid-bazlı nüfus haritalaması
@@ -28,6 +31,8 @@ Asteroid çarpma simülasyonu ve görselleştirme aracı. Kullanıcılar asteroi
   - 2 Parçalanma modeli: Pancake ve Discrete
   - Çelyabinsk 2013 doğrulaması
 - **📐 Formüller ve Teknik Bilgiler Sayfası**: Tüm hesaplamaların detaylı açıklamaları
+- **🌊 Tsunami Risk Analizi**: Okyanus çarpmalarında tsunami yüksekliği ve menzil tahmini
+- **👥 Gelişmiş Nüfus Etkisi**: GeoNames API ile gerçek nüfus yoğunluğu verileri
 
 ### 🛠️ Teknoloji Yığını
 - **Backend**: Python 3.8+, Flask
@@ -137,39 +142,35 @@ http://localhost:5000
 
 ### 🔬 Simülasyon Modu
 
-1. **Asteroid Kaynağı Seçin**:
-   - **Örnek Veri**: Hazır test verisi
-   - **Rastgele NASA Verisi**: NASA API'sinden gerçek tehlikeli asteroid
-   - **Manuel Giriş**: Kendi parametrelerinizi ayarlayın
+1. **Veri Kaynağı Seçin**:
+   - **🌐 Canlı Veriler (API)**: NASA NEO API'sinden gerçek zamanlı asteroid verileri
+   - **💾 Veritabanı**: 30+ önyüklenmiş asteroid, kuyruklu yıldız ve tarihi çarpma verileri
 
-2. **Parametreleri Ayarlayın**:
-   - **Çap**: Asteroidin çapı (10-1000 metre)
+2. **Asteroid Kaynağı Seçin**:
+   - **🎯 Manuel Giriş**: Kendi parametrelerinizi ayarlayın
+   - **🌞 Güneş Sistemi Asteroitleri**: Apophis, Bennu, Eros, Ceres vb.
+   - **☄️ Kuyruklu Yıldızlar**: Halley, Hale-Bopp, Oumuamua vb.
+   - **🦖 Chicxulub**: Dinozorları yok eden dev asteroid
+
+3. **Parametreleri Ayarlayın**:
+   - **Çap**: Asteroidin çapı (10-1000 metre, büyük asteroidler için otomatik genişler)
    - **Hız**: Çarpma hızı (10,000-100,000 km/h)
    - **Açı**: Çarpma açısı (15-90 derece)
-   - **Yoğunluk**: Asteroid yoğunluğu (1000-8000 kg/m³)
 
-3. **"Simülasyonu Başlat" Düğmesine Tıklayın**
+4. **Çarpma Konumu Seçin**:
+   - Harita üzerinde çarpma noktasını tıklayın veya kırmızı işaretçiyi sürükleyin
+   - Konum otomatik olarak okyanus/kara tespiti yapılır
 
-4. **Sonuçları İnceleyin**:
-   - Kinetik enerji ve TNT eşdeğeri
-   - Krater boyutu
-   - Deprem büyüklüğü (Richter)
-   - Hasar bölgeleri (harita üzerinde görselleştirilir)
+5. **"Simülasyonu Başlat" Düğmesine Tıklayın**
 
-### 🛡️ Dünya'yı Savun Modu
-
-1. **"Dünya'yı Savun" Moduna Geçin**
-
-2. **Savunma Parametrelerini Ayarlayın**:
-   - **Çarpma Aracı Kütlesi**: Göndereceğiniz uzay aracının kütlesi (100-2000 kg)
-   - **Delta-V**: Uygulanacak hız değişimi (1-100 m/s)
-   - **Uyarı Süresi**: Asteroidi ne kadar önceden tespit ettiniz? (30-1825 gün)
-
-3. **"Savunma Simülasyonu" Düğmesine Tıklayın**
-
-4. **Sonucu Görün**:
-   - ✅ Görev Başarılı: Asteroid Dünya'yı ıskalar
-   - ❌ Görev Başarısız: Daha fazla delta-v veya erken müdahale gerekli
+6. **Sonuçları İnceleyin**:
+   - **Atmosferik Giriş**: Kütle ve hız kaybı, ablasyon türü
+   - **Kinetik Enerji**: TNT eşdeğeri (Megaton)
+   - **Krater Boyutu**: Çap ve derinlik (3D görselleştirme)
+   - **Deprem Etkisi**: Richter büyüklüğü ve hissedilme mesafesi
+   - **Hasar Bölgeleri**: 4 seviye hasar yarıçapları (harita üzerinde)
+   - **Tsunami Riski**: Okyanus çarpmalarında tsunami yüksekliği ve menzili
+   - **Nüfus Etkisi**: Etkilenen ve tahmini kayıp sayısı
 
 ---
 
@@ -263,20 +264,7 @@ http://localhost:5000
 }
 ```
 
-#### 4. `/api/calculate_deflection`
-**Method**: POST  
-**Body**:
-```json
-{
-  "asteroid_mass_kg": 1e9,
-  "asteroid_velocity_ms": 18000,
-  "impactor_mass_kg": 500,
-  "delta_v": 10,
-  "warning_time_days": 365
-}
-```
-
-#### 5. 🆕 `/api/calculate_advanced_impact` (Rumpf Metodolojisi)
+#### 4. 🆕 `/api/calculate_advanced_impact` (Rumpf Metodolojisi)
 **Method**: POST  
 **Açıklama**: Gelişmiş asteroid çarpma risk değerlendirmesi - 7 tehlike türü analizi
 
@@ -320,7 +308,7 @@ http://localhost:5000
 
 **Detaylı Kullanım**: Bkz. `RUMPF_METHODOLOGY_GUIDE.md`
 
-#### 6. 🔥 `/api/simulate_atmospheric_entry` (Gelişmiş Atmosferik Giriş)
+#### 5. 🔥 `/api/simulate_atmospheric_entry` (Gelişmiş Atmosferik Giriş)
 **Method**: POST  
 **Açıklama**: Fizik tabanlı atmosferik giriş simülasyonu - Ablasyon, parçalanma ve ışıma
 
@@ -357,7 +345,7 @@ http://localhost:5000
 }
 ```
 
-#### 7. 🧪 `/api/simulate_chelyabinsk` (Çelyabinsk Doğrulama)
+#### 6. 🧪 `/api/simulate_chelyabinsk` (Çelyabinsk Doğrulama)
 **Method**: GET  
 **Açıklama**: 2013 Çelyabinsk süperbolidini simüle eder ve gözlemsel verilerle karşılaştırır
 
@@ -388,30 +376,14 @@ M = (log₁₀(E) - 4.8) / 1.5
 ```
 - `E`: Enerji (Joule)
 
-### Yörünge Sapması
+### Tsunami Yüksekliği (Basitleştirilmiş)
 ```
-Δv_asteroid = (m_impactor × v_impactor × β) / m_asteroid
-Sapma_mesafesi = Δv_asteroid × t_uyarı
+H₀ ≈ (E^0.25) × 3 × crater_factor
+H(r) = H₀ / √r
 ```
-- `β`: Momentum çoğaltma faktörü (~2.0)
-- `t_uyarı`: Uyarı süresi (saniye)
-
----
-
-## 🎮 Oyunlaştırma: "Dünya'yı Savun" Modu
-
-### Konsept
-NASA'nın DART (Double Asteroid Redirection Test) misyonundan esinlenilmiştir. Kullanıcı, yaklaşan bir asteroide kinetik çarpma aracı göndererek yörüngesini değiştirmeye çalışır.
-
-### Mekanik
-1. **Delta-V Seçimi**: Çarpma aracının asteroide uygulayacağı hız değişimi
-2. **Uyarı Süresi**: Daha erken tespit = Daha fazla sapma mesafesi
-3. **Başarı Kriteri**: Sapma mesafesi > 2 × Dünya yarıçapı (~12,742 km)
-
-### Stratejiler
-- ⏰ **Erken Tespit**: Daha fazla uyarı süresi = Daha az delta-v gerekir
-- 🚀 **Ağır Çarpma Aracı**: Daha fazla momentum transferi
-- 💨 **Yüksek Delta-V**: Daha güçlü itki sistemi
+- `H₀`: Başlangıç tsunami yüksekliği (m)
+- `r`: Kıyıya mesafe (km)
+- `crater_factor`: Krater boyutu faktörü
 
 ---
 
@@ -491,13 +463,14 @@ Bu proje eğitim amaçlıdır ve NASA Space Apps Challenge kurallarına tabidir.
 
 ## 🚀 Gelecek Geliştirmeler
 
-- [ ] Gerçek zamanlı asteroid takibi
-- [ ] Nükleer sapma seçeneği
-- [ ] Çoklu asteroid senaryoları
-- [ ] 3D arazi simülasyonu
-- [ ] Sosyal medya paylaşımı
+- [ ] Gerçek zamanlı asteroid takibi ve erken uyarı sistemi
+- [ ] İklim etkileri simülasyonu (ejekta, küresel soğuma)
+- [ ] Zaman içinde hasar yayılımı animasyonu
+- [ ] Karşılaştırmalı simülasyon modu (birden fazla senaryo)
+- [ ] PDF rapor oluşturma ve paylaşma
+- [ ] Mobil uygulama desteği
 
 ---
 
-**Dünya'yı korumak sizin ellerinizde! 🌍🛡️**
+**Asteroid çarpmalarını anlamak, geleceği korumak için ilk adımdır! 🌍🚀**
 
