@@ -1,0 +1,789 @@
+/* ============================================================================
+   ADIM 3.1: GENEL STILLER VE LAYOUT
+   ============================================================================ */
+
+:root {
+    --primary-color: #1a73e8;
+    --secondary-color: #34a853;
+    --danger-color: #ea4335;
+    --warning-color: #fbbc04;
+    --dark-bg: #0a0e27;
+    --panel-bg: #1a1f3a;
+    --card-bg: #252b48;
+    --text-primary: #ffffff;
+    --text-secondary: #b4b9d6;
+    --border-color: #2a3150;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
+    background: var(--panel-bg);
+    padding: 1.5rem 2rem;
+    box-shadow: var(--shadow);
+    border-bottom: 2px solid var(--primary-color);
+    position: relative;
+}
+
+.header-content h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, #1a73e8, #34a853);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.header-content p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Language Toggle Button */
+.lang-toggle {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.lang-btn {
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.lang-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.lang-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(26, 115, 232, 0.5);
+}
+
+/* Main Container - Two Column Layout */
+.container {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    max-width: 1920px;
+    margin: 0 auto;
+    min-height: calc(100vh - 150px);
+    align-items: start;
+}
+
+/* Left Column - Control Panel + Results */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Right Column - Asteroid Card + Visualizations */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Sol Panel - Kontrol Paneli */
+.control-panel {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    overflow-y: auto;
+    max-height: none;
+    min-height: auto;
+    height: auto;
+}
+
+.control-panel h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.control-panel h3 {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 1rem;
+    color: var(--secondary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Mod Seçici */
+.mode-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.mode-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(26, 115, 232, 0.5);
+}
+
+/* Kontrol Grupları */
+.control-section {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.control-group {
+    margin-bottom: 1.25rem;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.control-group label span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: var(--card-bg);
+    border-radius: 5px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color);
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(26, 115, 232, 0.6);
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color);
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+.control-group input[type="text"],
+.control-group select {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.control-group select {
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(26, 115, 232, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 115, 232, 0.6);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-small:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Sonuçlar Bölümü - Vertical Left Side */
+.results-section-vertical {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    overflow-y: visible;
+    min-height: auto;
+}
+
+.results-section-vertical h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.results-content-vertical {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.results-content-vertical .placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.9rem;
+    padding: 1rem;
+}
+
+.results-content-vertical .result-item {
+    margin: 0.75rem 0;
+    padding: 0.5rem;
+    background: var(--dark-bg);
+    border-radius: 4px;
+}
+
+.results-content-vertical .result-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.results-content-vertical .result-value {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Asteroid Info Card - Top of Right Column */
+.asteroid-info-card-top {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15));
+    border-radius: 12px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 6px 16px rgba(26, 115, 232, 0.4);
+    animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Old asteroid card style (kept for compatibility) */
+.asteroid-info-card {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+    border-radius: 12px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+}
+
+.asteroid-info-card h3,
+.asteroid-info-card-top h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.asteroid-info-content {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 1600px) {
+    .asteroid-info-content {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .asteroid-info-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.info-item {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+}
+
+.info-item-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.info-item-value {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.composition-bar {
+    margin-top: 0.5rem;
+    height: 8px;
+    background: var(--dark-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.composition-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+.success-message {
+    background: rgba(52, 168, 83, 0.2);
+    border-left-color: var(--secondary-color) !important;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.danger-message {
+    background: rgba(234, 67, 53, 0.2);
+    border-left-color: var(--danger-color) !important;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.warning-message {
+    background: rgba(251, 188, 4, 0.2);
+    border-left-color: var(--warning-color) !important;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+/* Sağ Panel - Görselleştirmeler */
+.visualization-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.viz-section {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.viz-section h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.visualization-container {
+    width: 100%;
+    height: 600px;
+    background: var(--dark-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+}
+
+/* Leaflet haritası için özel stil */
+#impactMap {
+    cursor: crosshair !important;
+}
+
+#impactMap .leaflet-container {
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+}
+
+/* Leaflet kontrolleri için z-index */
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 1000 !important;
+}
+
+.leaflet-control {
+    z-index: 1000 !important;
+}
+
+.viz-info {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* Footer */
+.footer {
+    background: var(--panel-bg);
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .left-column,
+    .right-column {
+        width: 100%;
+    }
+    
+    .control-panel {
+        max-height: none;
+    }
+    
+    .results-section-vertical {
+        max-height: none;
+    }
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Scrollbar Styling */
+.control-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.control-panel::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+    border-radius: 4px;
+}
+
+.control-panel::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.control-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Floating Action Button */
+.fab-simulation {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: auto;
+    min-width: 60px;
+    height: 60px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(26, 115, 232, 0.6);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.fab-simulation:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 8px 30px rgba(26, 115, 232, 0.8);
+}
+
+.fab-simulation:active {
+    transform: scale(0.95);
+}
+
+.fab-simulation.loading {
+    animation: fabPulse 1.5s infinite;
+    pointer-events: none;
+}
+
+@keyframes fabPulse {
+    0%, 100% {
+        box-shadow: 0 6px 20px rgba(26, 115, 232, 0.6);
+    }
+    50% {
+        box-shadow: 0 6px 30px rgba(26, 115, 232, 1);
+    }
+}
+
+.fab-icon {
+    font-size: 1.5rem;
+    animation: fabIconFloat 2s ease-in-out infinite;
+}
+
+@keyframes fabIconFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+.fab-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Mobile responsiveness for FAB */
+@media (max-width: 768px) {
+    .fab-simulation {
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        min-width: unset;
+    }
+    
+    .fab-text {
+        display: none;
+    }
+    
+    .fab-icon {
+        font-size: 2rem;
+    }
+}
+
+/* ============================================================================
+   Custom Impact Map Popup Styling
+   ============================================================================ */
+
+.custom-impact-popup .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    overflow: hidden;
+}
+
+.custom-impact-popup .leaflet-popup-content {
+    margin: 0;
+    font-family: 'Inter', 'Arial', sans-serif;
+}
+
+.custom-impact-popup .leaflet-popup-tip {
+    background: white;
+}
+
+/* Asteroid marker hover effect */
+.leaflet-marker-icon {
+    transition: transform 0.3s ease;
+}
+
+.leaflet-marker-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+    cursor: move;
+}
+
+/* ============================================================================
+   ANİMASYONLU ETKİ KATMANLARI
+   ============================================================================ */
+
+/* Animated effect layer - pulse effect */
+.animated-effect-layer {
+    animation: layerPulse 2s ease-in-out infinite;
+}
+
+@keyframes layerPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Leaflet circle animation */
+.leaflet-interactive {
+    transition: stroke-width 0.3s ease, fill-opacity 0.3s ease;
+}
+
+.leaflet-interactive:hover {
+    stroke-width: 4px !important;
+    fill-opacity: 0.5 !important;
+    cursor: pointer;
+}
+
+/* Custom popup styles for effect layers */
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    background: rgba(26, 31, 58, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaflet-popup-tip {
+    background: rgba(26, 31, 58, 0.95);
+}
+
+/* Scale-in animation for popups */
+.leaflet-popup {
+    animation: popupScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popupScaleIn {
+    0% {
+        transform: scale(0.7) translateY(10px);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Ripple effect for impact location */
+@keyframes rippleEffect {
+    0% {
+        box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 30px rgba(234, 67, 53, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(234, 67, 53, 0);
+    }
+}
+
+/* Glow effect for crater marker */
+@keyframes craterGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px rgba(234, 67, 53, 0.8));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(234, 67, 53, 1));
+    }
+}
+

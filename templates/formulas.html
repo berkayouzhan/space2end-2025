@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formüller ve Teknik Bilgiler - Asteroid Impact Visualizer</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        .formula-page {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .formula-section {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(10, 14, 39, 0.95));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .formula-section h2 {
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .formula-section h3 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .formula-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #e3e8ff;
+        }
+        
+        .variable-list {
+            background: rgba(251, 188, 4, 0.05);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 3px solid var(--warning-color);
+        }
+        
+        .variable-list li {
+            margin: 0.5rem 0;
+            color: var(--text-primary);
+        }
+        
+        .example-box {
+            background: rgba(52, 168, 83, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-bottom: 2rem;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tech-card {
+            background: rgba(147, 51, 234, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+        }
+        
+        .tech-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+        }
+        
+        code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #64ffda;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 data-lang-en="📐 Formulas & Technical Information" data-lang-tr="📐 Formüller ve Teknik Bilgiler">📐 Formüller ve Teknik Bilgiler</h1>
+            <p data-lang-en="NASA Space Apps Challenge 2025 - Scientific Methodology" data-lang-tr="NASA Space Apps Challenge 2025 - Bilimsel Metodoloji">NASA Space Apps Challenge 2025 - Bilimsel Metodoloji</p>
+        </div>
+        <div class="lang-toggle">
+            <button class="lang-btn active" id="lang-en" onclick="switchLanguage('en')">🇬🇧 EN</button>
+            <button class="lang-btn" id="lang-tr" onclick="switchLanguage('tr')">🇹🇷 TR</button>
+        </div>
+    </header>
+
+    <div class="formula-page">
+        <a href="/" class="back-button">← <span data-lang-en="Back to Simulator" data-lang-tr="Simülatöre Dön">Back to Simulator</span></a>
+
+        <!-- Kinetik Enerji -->
+        <div class="formula-section">
+            <h2>🔋 <span data-lang-en="Kinetic Energy Calculation" data-lang-tr="Kinetik Enerji Hesaplaması">Kinetic Energy Calculation</span></h2>
+            
+            <p data-lang-en="The kinetic energy of an asteroid is calculated using the classical physics formula:" 
+               data-lang-tr="Bir asteroidin kinetik enerjisi klasik fizik formülü kullanılarak hesaplanır:">
+               The kinetic energy of an asteroid is calculated using the classical physics formula:
+            </p>
+            
+            <div class="formula-box">
+                E<sub>k</sub> = ½ × m × v²
+            </div>
+            
+            <div class="variable-list">
+                <strong data-lang-en="Where:" data-lang-tr="Burada:">Where:</strong>
+                <ul>
+                    <li><code>E<sub>k</sub></code> = <span data-lang-en="Kinetic Energy (Joules)" data-lang-tr="Kinetik Enerji (Joule)">Kinetic Energy (Joules)</span></li>
+                    <li><code>m</code> = <span data-lang-en="Mass of asteroid (kg)" data-lang-tr="Asteroidin kütlesi (kg)">Mass of asteroid (kg)</span></li>
+                    <li><code>v</code> = <span data-lang-en="Impact velocity (m/s)" data-lang-tr="Çarpma hızı (m/s)">Impact velocity (m/s)</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="Mass Calculation:" data-lang-tr="Kütle Hesaplaması:">Mass Calculation:</span></h3>
+            <div class="formula-box">
+                m = ρ × V = ρ × (4/3 × π × r³)
+            </div>
+            
+            <div class="variable-list">
+                <ul>
+                    <li><code>ρ</code> = <span data-lang-en="Density (kg/m³) - Typical: 3000 kg/m³ for stony asteroids" data-lang-tr="Yoğunluk (kg/m³) - Tipik: 3000 kg/m³ taşlı asteroidler için">Density (kg/m³) - Typical: 3000 kg/m³ for stony asteroids</span></li>
+                    <li><code>V</code> = <span data-lang-en="Volume (m³)" data-lang-tr="Hacim (m³)">Volume (m³)</span></li>
+                    <li><code>r</code> = <span data-lang-en="Radius = Diameter / 2" data-lang-tr="Yarıçap = Çap / 2">Radius = Diameter / 2</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="TNT Equivalent:" data-lang-tr="TNT Eşdeğeri:">TNT Equivalent:</span></h3>
+            <div class="formula-box">
+                TNT (Megatons) = E<sub>k</sub> / (4.184 × 10¹⁵)
+            </div>
+            
+            <div class="example-box">
+                <strong>💡 <span data-lang-en="Example:" data-lang-tr="Örnek:">Example:</span></strong><br>
+                <span data-lang-en="A 150m diameter asteroid at 18 km/s:" data-lang-tr="150m çapında, 18 km/s hızındaki bir asteroid:">A 150m diameter asteroid at 18 km/s:</span>
+                <ul>
+                    <li><span data-lang-en="Mass: ~5.3 billion kg" data-lang-tr="Kütle: ~5.3 milyar kg">Mass: ~5.3 billion kg</span></li>
+                    <li><span data-lang-en="Energy: ~860 Petajoules ≈ 205 Megatons TNT" data-lang-tr="Enerji: ~860 Petajul ≈ 205 Megaton TNT">Energy: ~860 Petajoules ≈ 205 Megatons TNT</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Krater Çapı -->
+        <div class="formula-section">
+            <h2>🕳️ <span data-lang-en="Crater Diameter Calculation" data-lang-tr="Krater Çapı Hesaplaması">Crater Diameter Calculation</span></h2>
+            
+            <p data-lang-en="Based on Collins et al. (2005) scaling laws:" 
+               data-lang-tr="Collins ve diğerleri (2005) ölçekleme yasalarına dayanarak:">
+               Based on Collins et al. (2005) scaling laws:
+            </p>
+            
+            <div class="formula-box">
+                D<sub>crater</sub> = C × D<sub>asteroid</sub> × (v/v<sub>0</sub>)<sup>α</sup> × sin(θ)<sup>β</sup>
+            </div>
+            
+            <div class="variable-list">
+                <strong data-lang-en="Where:" data-lang-tr="Burada:">Where:</strong>
+                <ul>
+                    <li><code>D<sub>crater</sub></code> = <span data-lang-en="Crater diameter (m)" data-lang-tr="Krater çapı (m)">Crater diameter (m)</span></li>
+                    <li><code>D<sub>asteroid</sub></code> = <span data-lang-en="Asteroid diameter (m)" data-lang-tr="Asteroid çapı (m)">Asteroid diameter (m)</span></li>
+                    <li><code>v</code> = <span data-lang-en="Impact velocity (m/s)" data-lang-tr="Çarpma hızı (m/s)">Impact velocity (m/s)</span></li>
+                    <li><code>v<sub>0</sub></code> = <span data-lang-en="Reference velocity = 12,000 m/s" data-lang-tr="Referans hız = 12,000 m/s">Reference velocity = 12,000 m/s</span></li>
+                    <li><code>θ</code> = <span data-lang-en="Impact angle (degrees from horizontal)" data-lang-tr="Çarpma açısı (yataydan derece)">Impact angle (degrees from horizontal)</span></li>
+                    <li><code>C</code> = <span data-lang-en="Scaling constant ≈ 13" data-lang-tr="Ölçekleme sabiti ≈ 13">Scaling constant ≈ 13</span></li>
+                    <li><code>α</code> = <span data-lang-en="Velocity exponent ≈ 0.44" data-lang-tr="Hız üssü ≈ 0.44">Velocity exponent ≈ 0.44</span></li>
+                    <li><code>β</code> = <span data-lang-en="Angle exponent ≈ 0.33" data-lang-tr="Açı üssü ≈ 0.33">Angle exponent ≈ 0.33</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="Crater Depth:" data-lang-tr="Krater Derinliği:">Crater Depth:</span></h3>
+            <div class="formula-box">
+                Depth = D<sub>crater</sub> / 5
+            </div>
+            <p data-lang-en="Complex craters typically have a depth-to-diameter ratio of ~1:5" 
+               data-lang-tr="Karmaşık kraterler tipik olarak ~1:5 derinlik-çap oranına sahiptir">
+               Complex craters typically have a depth-to-diameter ratio of ~1:5
+            </p>
+        </div>
+
+        <!-- Sismik Etki -->
+        <div class="formula-section">
+            <h2>🌊 <span data-lang-en="Seismic Effect (Earthquake Magnitude)" data-lang-tr="Sismik Etki (Deprem Büyüklüğü)">Seismic Effect (Earthquake Magnitude)</span></h2>
+            
+            <h3><span data-lang-en="Richter Scale:" data-lang-tr="Richter Ölçeği:">Richter Scale:</span></h3>
+            <div class="formula-box">
+                M<sub>L</sub> = (log₁₀(E) - 4.8) / 1.5
+            </div>
+            
+            <div class="variable-list">
+                <strong data-lang-en="Where:" data-lang-tr="Burada:">Where:</strong>
+                <ul>
+                    <li><code>M<sub>L</sub></code> = <span data-lang-en="Richter Magnitude" data-lang-tr="Richter Büyüklüğü">Richter Magnitude</span></li>
+                    <li><code>E</code> = <span data-lang-en="Seismic energy (Joules)" data-lang-tr="Sismik enerji (Joule)">Seismic energy (Joules)</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="Moment Magnitude Scale:" data-lang-tr="Moment Büyüklük Ölçeği:">Moment Magnitude Scale:</span></h3>
+            <div class="formula-box">
+                M<sub>w</sub> = (2/3) × log₁₀(M<sub>0</sub>) - 10.7
+            </div>
+            
+            <div class="variable-list">
+                <ul>
+                    <li><code>M<sub>w</sub></code> = <span data-lang-en="Moment Magnitude" data-lang-tr="Moment Büyüklüğü">Moment Magnitude</span></li>
+                    <li><code>M<sub>0</sub></code> = <span data-lang-en="Seismic moment (N·m)" data-lang-tr="Sismik moment (N·m)">Seismic moment (N·m)</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="Felt Distance:" data-lang-tr="Hissedilme Mesafesi:">Felt Distance:</span></h3>
+            <div class="formula-box">
+                Distance = 10<sup>(0.5 × M + 1)</sup>
+            </div>
+            <p data-lang-en="Approximate distance where seismic waves can be felt (km)" 
+               data-lang-tr="Sismik dalgaların hissedilebileceği yaklaşık mesafe (km)">
+               Approximate distance where seismic waves can be felt (km)
+            </p>
+        </div>
+
+        <!-- Atmosferik Giriş -->
+        <div class="formula-section">
+            <h2>🌡️ <span data-lang-en="Atmospheric Entry Physics" data-lang-tr="Atmosferik Giriş Fiziği">Atmospheric Entry Physics</span></h2>
+            
+            <h3><span data-lang-en="Deceleration (Drag Force):" data-lang-tr="Yavaşlama (Sürtünme Kuvveti):">Deceleration (Drag Force):</span></h3>
+            <div class="formula-box">
+                dv/dt = -(ρ<sub>air</sub> × v² × C<sub>D</sub> × A) / (2 × m)
+            </div>
+            
+            <div class="variable-list">
+                <ul>
+                    <li><code>ρ<sub>air</sub></code> = <span data-lang-en="Air density (exponential with altitude)" data-lang-tr="Hava yoğunluğu (irtifa ile üstel)">Air density (exponential with altitude)</span></li>
+                    <li><code>C<sub>D</sub></code> = <span data-lang-en="Drag coefficient ≈ 0.5-1.0" data-lang-tr="Sürtünme katsayısı ≈ 0.5-1.0">Drag coefficient ≈ 0.5-1.0</span></li>
+                    <li><code>A</code> = <span data-lang-en="Cross-sectional area" data-lang-tr="Kesit alanı">Cross-sectional area</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="Ablation (Mass Loss):" data-lang-tr="Ablasyon (Kütle Kaybı):">Ablation (Mass Loss):</span></h3>
+            <div class="formula-box">
+                dm/dt = -(C<sub>H</sub> × ρ<sub>air</sub> × v³ × A) / (2 × Q)
+            </div>
+            
+            <div class="variable-list">
+                <ul>
+                    <li><code>C<sub>H</sub></code> = <span data-lang-en="Heat transfer coefficient ≈ 0.1" data-lang-tr="Isı transfer katsayısı ≈ 0.1">Heat transfer coefficient ≈ 0.1</span></li>
+                    <li><code>Q</code> = <span data-lang-en="Heat of ablation (8 MJ/kg for stone)" data-lang-tr="Ablasyon ısısı (taş için 8 MJ/kg)">Heat of ablation (8 MJ/kg for stone)</span></li>
+                </ul>
+            </div>
+            
+            <h3><span data-lang-en="Luminosity (Brightness):" data-lang-tr="Parlaklık:">Luminosity (Brightness):</span></h3>
+            <div class="formula-box">
+                L = τ × (dE/dt) = τ × (½ × m × v × |dv/dt|)
+            </div>
+            
+            <div class="variable-list">
+                <ul>
+                    <li><code>τ</code> = <span data-lang-en="Luminous efficiency ≈ 0.1-0.5%" data-lang-tr="Işıma verimliliği ≈ 0.1-0.5%">Luminous efficiency ≈ 0.1-0.5%</span></li>
+                    <li><code>dE/dt</code> = <span data-lang-en="Rate of kinetic energy loss" data-lang-tr="Kinetik enerji kayıp hızı">Rate of kinetic energy loss</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hasar Bölgeleri -->
+        <div class="formula-section">
+            <h2>💥 <span data-lang-en="Damage Zones (Rumpf Methodology)" data-lang-tr="Hasar Bölgeleri (Rumpf Metodolojisi)">Damage Zones (Rumpf Methodology)</span></h2>
+            
+            <p data-lang-en="Based on Rumpf et al. (2017) - 7 distinct hazard types:" 
+               data-lang-tr="Rumpf ve diğerleri (2017) - 7 farklı tehlike türüne dayanarak:">
+               Based on Rumpf et al. (2017) - 7 distinct hazard types:
+            </p>
+            
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>1️⃣ <span data-lang-en="Overpressure" data-lang-tr="Aşırı Basınç">Overpressure</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        ΔP = 3.14 × 10⁵ × (E/R³)<sup>2/3</sup>
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="Lethal: >15 psi (~103 kPa)" data-lang-tr="Öldürücü: >15 psi (~103 kPa)">Lethal: >15 psi (~103 kPa)</span>
+                    </p>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>2️⃣ <span data-lang-en="Wind Blast" data-lang-tr="Rüzgar Patlaması">Wind Blast</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        v<sub>wind</sub> = f(ΔP, EF-scale)
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="Enhanced Fujita Scale (EF0-EF5)" data-lang-tr="Geliştirilmiş Fujita Ölçeği (EF0-EF5)">Enhanced Fujita Scale (EF0-EF5)</span>
+                    </p>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>3️⃣ <span data-lang-en="Thermal Radiation" data-lang-tr="Termal Radyasyon">Thermal Radiation</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        Q = E × η / (4π × R²)
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="2nd degree burns: >5 kJ/cm²" data-lang-tr="2. derece yanıklar: >5 kJ/cm²">2nd degree burns: >5 kJ/cm²</span>
+                    </p>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>4️⃣ <span data-lang-en="Seismic Shaking" data-lang-tr="Sismik Sarsıntı">Seismic Shaking</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        PGA = f(E, R, M<sub>w</sub>)
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="Peak Ground Acceleration" data-lang-tr="Pik Yer İvmesi">Peak Ground Acceleration</span>
+                    </p>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>5️⃣ <span data-lang-en="Ejecta Deposition" data-lang-tr="Ejekta Birikmesi">Ejecta Deposition</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        T<sub>ejecta</sub> = f(R, D<sub>crater</sub>)
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="Roof collapse: >200 kg/m²" data-lang-tr="Çatı çökmesi: >200 kg/m²">Roof collapse: >200 kg/m²</span>
+                    </p>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>6️⃣ <span data-lang-en="Cratering" data-lang-tr="Kraterleşme">Cratering</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        R<sub>crater</sub> = D<sub>crater</sub> / 2
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="100% lethality within crater" data-lang-tr="Krater içinde %100 ölüm">100% lethality within crater</span>
+                    </p>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>7️⃣ <span data-lang-en="Tsunami" data-lang-tr="Tsunami">Tsunami</span></h4>
+                    <div class="formula-box" style="font-size: 0.9rem;">
+                        H<sub>wave</sub> = f(E, depth, R)
+                    </div>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        <span data-lang-en="Ocean impacts only" data-lang-tr="Sadece okyanus çarpmaları">Ocean impacts only</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Referanslar -->
+        <div class="formula-section">
+            <h2>📚 <span data-lang-en="Scientific References" data-lang-tr="Bilimsel Referanslar">Scientific References</span></h2>
+            
+            <ul style="line-height: 2;">
+                <li><strong>Collins, G. S., Melosh, H. J., & Marcus, R. A.</strong> (2005). Earth Impact Effects Program. <em>Meteoritics & Planetary Science</em>, 40(6), 817-840.</li>
+                
+                <li><strong>Rumpf, C. M., Lewis, H. G., & Atkinson, P. M.</strong> (2017). Population Vulnerability Models for Asteroid Impact Risk Assessment. <em>Meteoritics & Planetary Science</em>, 52(6), 1082-1102.</li>
+                
+                <li><strong>Chyba, C. F., Thomas, P. J., & Zahnle, K. J.</strong> (1993). The 1908 Tunguska explosion: atmospheric disruption of a stony asteroid. <em>Nature</em>, 361(6407), 40-44.</li>
+                
+                <li><strong>Hills, J. G., & Goda, M. P.</strong> (1993). The fragmentation of small asteroids in the atmosphere. <em>The Astronomical Journal</em>, 105(3), 1114-1144.</li>
+                
+                <li><strong>Ward, S. N., & Asphaug, E.</strong> (2000). Asteroid impact tsunami: A probabilistic hazard assessment. <em>Icarus</em>, 145(1), 64-78.</li>
+            </ul>
+        </div>
+
+        <!-- API Kullanımı -->
+        <div class="formula-section">
+            <h2>🔌 <span data-lang-en="Data Sources & APIs" data-lang-tr="Veri Kaynakları ve API'ler">Data Sources & APIs</span></h2>
+            
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>NASA NeoWs API</h4>
+                    <p data-lang-en="Near-Earth Object Web Service - Real asteroid data" 
+                       data-lang-tr="Yakın-Dünya Cismi Web Servisi - Gerçek asteroid verileri">
+                       Near-Earth Object Web Service - Real asteroid data
+                    </p>
+                    <code>api.nasa.gov/neo/rest/v1</code>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>GeoNames</h4>
+                    <p data-lang-en="Population density and geographic data" 
+                       data-lang-tr="Nüfus yoğunluğu ve coğrafi veriler">
+                       Population density and geographic data
+                    </p>
+                    <code>geonames.org</code>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>USGS</h4>
+                    <p data-lang-en="Topographic maps and terrain data" 
+                       data-lang-tr="Topografik haritalar ve arazi verileri">
+                       Topographic maps and terrain data
+                    </p>
+                    <code>usgs.gov</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p data-lang-en="Developed for NASA Space Apps Challenge 2025 | Scientific accuracy based on peer-reviewed research" 
+           data-lang-tr="NASA Space Apps Challenge 2025 için geliştirildi | Bilimsel doğruluk hakemli araştırmalara dayalıdır">
+           Developed for NASA Space Apps Challenge 2025 | Scientific accuracy based on peer-reviewed research
+        </p>
+    </footer>
+
+    <script>
+        // Basit dil değiştirme
+        let currentLanguage = 'en';
+        
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-tr').classList.toggle('active', lang === 'tr');
+            
+            const elements = document.querySelectorAll('[data-lang-en][data-lang-tr]');
+            elements.forEach(el => {
+                const text = el.getAttribute(`data-lang-${lang}`);
+                if (text) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.value = text;
+                    } else {
+                        el.textContent = text;
+                    }
+                }
+            });
+            
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>
+

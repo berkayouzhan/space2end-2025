@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Impact Visualizer - NASA Space Apps Challenge 2025</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 data-lang-en="🌍 Asteroid Impact Visualizer" data-lang-tr="🌍 Asteroid Çarpma Görselleştirici">🌍 Asteroid Impact Visualizer</h1>
+            <p data-lang-en="NASA Space Apps Challenge 2025 - Impactor Challenge" data-lang-tr="NASA Space Apps Challenge 2025 - Çarpışma Meydan Okuması">NASA Space Apps Challenge 2025 - Impactor Challenge</p>
+        </div>
+        <div class="lang-toggle">
+            <button class="lang-btn active" id="lang-en" onclick="switchLanguage('en')">🇬🇧 EN</button>
+            <button class="lang-btn" id="lang-tr" onclick="switchLanguage('tr')">🇹🇷 TR</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Control Panel -->
+            <aside class="control-panel">
+            <h2 data-lang-en="⚙️ Control Panel" data-lang-tr="⚙️ Kontrol Paneli">⚙️ Control Panel</h2>
+            
+            <!-- Data Source Selection -->
+            <div class="control-section" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15)); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid var(--primary-color);">
+                <h3 style="margin: 0 0 0.75rem 0; font-size: 1.1rem;">📊 <span data-lang-en="Data Source" data-lang-tr="Veri Kaynağı">Data Source</span></h3>
+                <div class="control-group" style="margin: 0;">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="dataSourceApi" class="data-source-btn active" onclick="switchDataSource('api')" style="flex: 1; padding: 0.75rem; border: 2px solid var(--primary-color); background: rgba(59, 130, 246, 0.2); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                            <span data-lang-en="🌐 Live Data (API)" data-lang-tr="🌐 Canlı Veriler (API)">🌐 Live Data (API)</span>
+                        </button>
+                        <button id="dataSourceDatabase" class="data-source-btn" onclick="switchDataSource('database')" style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); background: rgba(26, 31, 58, 0.5); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                            <span data-lang-en="💾 Database" data-lang-tr="💾 Veritabanı">💾 Database</span>
+                        </button>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.5rem 0 0 0; text-align: center;">
+                        <span data-lang-en="Live: Real NASA data | Database: Pre-loaded asteroids" data-lang-tr="Canlı: Gerçek NASA verileri | Veritabanı: Önyüklenmiş asteroidler">Live: Real NASA data | Database: Pre-loaded asteroids</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Simulation Mode Controls -->
+            <div id="simulation-controls" class="control-section">
+                <h3 data-lang-en="Asteroid Properties" data-lang-tr="Asteroid Özellikleri">Asteroid Properties</h3>
+                
+                <div class="control-group">
+                    <label for="asteroidSource" data-lang-en="🎯 Asteroid Source:" data-lang-tr="🎯 Asteroid Kaynağı:">🎯 Asteroid Source:</label>
+                    <select id="asteroidSource" style="margin-bottom: 0.5rem;">
+                        <option value="custom" data-lang-en="🎯 Manual Input" data-lang-tr="🎯 Manuel Giriş">🎯 Manual Input</option>
+                        <option value="solar" data-lang-en="🌞 Solar System Asteroids" data-lang-tr="🌞 Güneş Sistemi Asteroitleri">🌞 Solar System Asteroids</option>
+                        <option value="comets" data-lang-en="☄️ Comets" data-lang-tr="☄️ Kuyruklu Yıldızlar">☄️ Comets</option>
+                        <option value="chicxulub" data-lang-en="🦖 Chicxulub (Dinosaurs)" data-lang-tr="🦖 Chicxulub (Dinozorlar)">🦖 Chicxulub (Dinosaurs)</option>
+                    </select>
+                    <button id="loadAsteroidBtn" class="btn-small" data-lang-en="Load" data-lang-tr="Yükle">Load</button>
+                </div>
+                
+                <!-- Solar System Asteroid Selection -->
+                <div id="solarSystemSelection" class="control-group" style="display: none;">
+                    <label for="solarAsteroid" data-lang-en="Select Asteroid:" data-lang-tr="Asteroid Seç:">Select Asteroid:</label>
+                    <select id="solarAsteroid">
+                        <optgroup label="Near-Earth Asteroids">
+                            <option value="apophis">99942 Apophis (370m)</option>
+                            <option value="bennu">101955 Bennu (490m)</option>
+                            <option value="ryugu">162173 Ryugu (900m)</option>
+                            <option value="eros">433 Eros (16.8km)</option>
+                            <option value="itokawa">25143 Itokawa (535m)</option>
+                            <option value="2013tv135">2013 TV135 (400m)</option>
+                            <option value="didymos">65803 Didymos (780m)</option>
+                            <option value="phaethon">3200 Phaethon (5.1km)</option>
+                            <option value="icarus">1566 Icarus (1.4km)</option>
+                            <option value="toutatis">4179 Toutatis (4.6km)</option>
+                            <option value="geographos">1620 Geographos (5.1km)</option>
+                            <option value="florence">3122 Florence (4.9km)</option>
+                            <option value="golevka">6489 Golevka (530m)</option>
+                            <option value="castalia">4769 Castalia (1.4km)</option>
+                            <option value="bacchus">2063 Bacchus (1.1km)</option>
+                        </optgroup>
+                        <optgroup label="Main Belt Asteroids">
+                            <option value="ceres">1 Ceres (940km)</option>
+                            <option value="vesta">4 Vesta (525km)</option>
+                            <option value="pallas">2 Pallas (512km)</option>
+                            <option value="psyche">16 Psyche (226km)</option>
+                            <option value="hygiea">10 Hygiea (434km)</option>
+                            <option value="davida">511 Davida (326km)</option>
+                            <option value="interamnia">704 Interamnia (310km)</option>
+                            <option value="europa">52 Europa (302km)</option>
+                            <option value="gaspra">951 Gaspra (12.2km)</option>
+                            <option value="mathilde">253 Mathilde (52.8km)</option>
+                            <option value="steins">2867 Šteins (5.3km)</option>
+                            <option value="lutetia">21 Lutetia (100km)</option>
+                        </optgroup>
+                        <optgroup label="Special Orbits">
+                            <option value="atira">163693 Atira (4.8km)</option>
+                            <option value="cruithne">3753 Cruithne (5km)</option>
+                            <option value="vesta_4">1981 ET3 (1.8km)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <!-- Comets Selection -->
+                <div id="cometsSelection" class="control-group" style="display: none;">
+                    <label for="cometObject" data-lang-en="Select Comet:" data-lang-tr="Kuyruklu Yıldız Seç:">Select Comet:</label>
+                    <select id="cometObject">
+                        <option value="halley">1P/Halley (~11km)</option>
+                        <option value="hyakutake">C/1996 B2 Hyakutake (4.2km)</option>
+                        <option value="hale-bopp">C/1995 O1 Hale-Bopp (60km)</option>
+                        <option value="oumuamua">1I/'Oumuamua (230m)</option>
+                        <option value="borisov">2I/Borisov (~1km)</option>
+                        <option value="shoemaker-levy">D/1993 F2 Shoemaker-Levy 9 (5km)</option>
+                        <option value="encke">2P/Encke (4.8km)</option>
+                        <option value="swift-tuttle">109P/Swift-Tuttle (26km)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="asteroidName" data-lang-en="Asteroid Name:" data-lang-tr="Asteroid Adı:">Asteroid Name:</label>
+                    <input type="text" id="asteroidName" value="2023 DW" readonly>
+                </div>
+
+                <div class="control-group">
+                    <label for="diameter"><span data-lang-en="Diameter (meters):" data-lang-tr="Çap (metre):">Diameter (meters):</span> <span id="diameterValue">150</span>m</label>
+                    <input type="range" id="diameter" min="10" max="1000" value="150" step="10">
+                </div>
+
+                <div class="control-group">
+                    <label for="velocity"><span data-lang-en="Velocity (km/h):" data-lang-tr="Hız (km/h):">Velocity (km/h):</span> <span id="velocityValue">64,800</span></label>
+                    <input type="range" id="velocity" min="10000" max="100000" value="64800" step="1000">
+                </div>
+
+                <div class="control-group">
+                    <label for="angle"><span data-lang-en="Impact Angle (degrees):" data-lang-tr="Çarpma Açısı (derece):">Impact Angle (degrees):</span> <span id="angleValue">45</span>°</label>
+                    <input type="range" id="angle" min="15" max="90" value="45" step="5">
+                </div>
+
+                <button id="runSimulationBtn" class="btn-primary" data-lang-en="🚀 Run Simulation" data-lang-tr="🚀 Simülasyonu Başlat">🚀 Run Simulation</button>
+            </div>
+            </aside>
+
+            <!-- Results Section - Left Side Vertical -->
+            <div class="results-section-vertical">
+                <h3 data-lang-en="📊 Results" data-lang-tr="📊 Sonuçlar">📊 Results</h3>
+                <div id="resultsContent" class="results-content-vertical">
+                    <p class="placeholder" data-lang-en="Results will appear here after simulation..." data-lang-tr="Sonuçlar simülasyondan sonra burada görünecek...">Results will appear here after simulation...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="right-column">
+            <!-- Asteroid Info Card - Top of Right Column -->
+            <div id="asteroidInfoCard" class="asteroid-info-card-top" style="display: none;">
+                <h3 data-lang-en="🪨 Asteroid Composition" data-lang-tr="🪨 Asteroid Bileşimi">🪨 Asteroid Composition</h3>
+                <div id="asteroidInfoContent" class="asteroid-info-content">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Visualizations -->
+        <main class="visualization-panel">
+            <!-- NASA Eyes Solar System Explorer -->
+            <section class="viz-section">
+                <h2 data-lang-en="🌌 NASA Eyes - Solar System Explorer" data-lang-tr="🌌 NASA Eyes - Güneş Sistemi Keşfi">🌌 NASA Eyes - Solar System Explorer</h2>
+                <div class="visualization-container" style="height: 600px; position: relative; overflow: hidden;">
+                    <iframe 
+                        src="https://eyes.nasa.gov/apps/solar-system/#/c_2025_n1?logo=false&shareButton=false&menu=false" 
+                        allowfullscreen 
+                        style="width: 100%; height: 100%; border: none; border-radius: 8px;">
+                    </iframe>
+                </div>
+                <div class="viz-info">
+                    <p><strong>🎯 NASA Eyes:</strong> <span data-lang-en="Real-time solar system visualization - Explore planets, asteroids, and comets!" data-lang-tr="Gerçek zamanlı güneş sistemi görselleştirmesi - Gezegenleri, asteroitleri ve kuyruklu yıldızları keşfedin!">Real-time solar system visualization - Explore planets, asteroids, and comets!</span></p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        <span data-lang-en="💡 Rotate with mouse, zoom with scroll wheel, click on planets for details" data-lang-tr="💡 Fareyle döndür, tekerlekle yakınlaştır, gezegenlere tıklayarak detay gör">💡 Rotate with mouse, zoom with scroll wheel, click on planets for details</span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- 2D Map Visualization -->
+            <section class="viz-section">
+                <h2 data-lang-en="🗺️ Impact Effect Map" data-lang-tr="🗺️ Çarpma Etkisi Haritası">🗺️ Impact Effect Map</h2>
+                <div id="impactMap" class="visualization-container"></div>
+                <div class="viz-info">
+                    <p><strong data-lang-en="TIP:" data-lang-tr="İPUCU:">TIP:</strong> <span data-lang-en="Click on map or drag the red marker to select impact location" data-lang-tr="Haritaya tıklayın veya kırmızı işaretçiyi sürükleyerek çarpma konumu seçin">Click on map or drag the red marker to select impact location</span></p>
+                </div>
+            </section>
+
+            <!-- 3D Topographic Crater Visualization -->
+            <section class="viz-section">
+                <h2 data-lang-en="🏔️ 3D Topographic Crater Model" data-lang-tr="🏔️ 3D Topografik Krater Modeli">🏔️ 3D Topographic Crater Model</h2>
+                <div id="craterTopography" class="visualization-container" style="height: 500px;"></div>
+                <div class="viz-info">
+                    <p><strong data-lang-en="3D VIEW:" data-lang-tr="3D GÖRÜNÜM:">3D VIEW:</strong> <span data-lang-en="Rotate with mouse, zoom with scroll, drag to pan" data-lang-tr="Fareyle döndür, kaydırarak yakınlaştır, sürükle">Rotate with mouse, zoom with scroll, drag to pan</span></p>
+                </div>
+            </section>
+
+            <!-- Diametric Cross-Section Visualization -->
+            <section class="viz-section">
+                <h2 data-lang-en="📏 Crater Cross-Section (Diametric View)" data-lang-tr="📏 Krater Kesiti (Diyametrik Görünüm)">📏 Crater Cross-Section (Diametric View)</h2>
+                <div id="craterCrossSection" class="visualization-container" style="height: 400px;"></div>
+                <div class="viz-info">
+                    <p><strong data-lang-en="CROSS-SECTION:" data-lang-tr="KESİT:">CROSS-SECTION:</strong> <span data-lang-en="Crater depth profile and damage zones" data-lang-tr="Krater derinlik profili ve hasar bölgeleri">Crater depth profile and damage zones</span></p>
+                </div>
+            </section>
+
+            <!-- USGS Topographic Map -->
+            <section class="viz-section">
+                <h2 data-lang-en="🗺️ USGS Topographic Map" data-lang-tr="🗺️ USGS Topografik Harita">🗺️ USGS Topographic Map</h2>
+                <div id="usgsTopoMap" class="visualization-container" style="height: 600px;"></div>
+                <div class="viz-info">
+                    <p><strong data-lang-en="USGS TOPO:" data-lang-tr="USGS TOPO:">USGS TOPO:</strong> <span data-lang-en="U.S. Geological Survey topographic map layer" data-lang-tr="ABD Jeolojik Araştırma topografik harita katmanı">U.S. Geological Survey topographic map layer</span></p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                        <span data-lang-en="📍 Tiles courtesy of the U.S. Geological Survey" data-lang-tr="📍 Harita karoları ABD Jeolojik Araştırma'dan sağlanmıştır">📍 Tiles courtesy of the U.S. Geological Survey</span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- USGS Imagery Topo Map -->
+            <section class="viz-section">
+                <h2 data-lang-en="🛰️ USGS Imagery Topo Map" data-lang-tr="🛰️ USGS Uydu Topografik Harita">🛰️ USGS Imagery Topo Map</h2>
+                <div id="usgsImageryMap" class="visualization-container" style="height: 600px;"></div>
+                <div class="viz-info">
+                    <p><strong data-lang-en="IMAGERY TOPO:" data-lang-tr="UYDU TOPO:">IMAGERY TOPO:</strong> <span data-lang-en="Satellite imagery combined with topographic details" data-lang-tr="Topografik detaylarla birleştirilmiş uydu görüntüsü">Satellite imagery combined with topographic details</span></p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                        <span data-lang-en="🌍 High-resolution satellite + topo overlay" data-lang-tr="🌍 Yüksek çözünürlüklü uydu + topo katman">🌍 High-resolution satellite + topo overlay</span>
+                    </p>
+                </div>
+            </section>
+        </main>
+        </div>
+    </div>
+
+    <!-- Floating Action Button - Run Simulation -->
+    <button id="fabSimulation" class="fab-simulation" 
+            onclick="runSimulation()"
+            aria-label="Run Simulation">
+        <span class="fab-icon">🚀</span>
+        <span class="fab-text" data-lang-en="Run Simulation" data-lang-tr="Simülasyonu Başlat">Run Simulation</span>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p data-lang-en="Developed for NASA Space Apps Challenge 2025 | Data source: NASA NEO API" data-lang-tr="NASA Space Apps Challenge 2025 için geliştirildi | Veri kaynağı: NASA NEO API">Developed for NASA Space Apps Challenge 2025 | Data source: NASA NEO API</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="/formulas" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                📐 <span data-lang-en="View Formulas & Technical Information" data-lang-tr="Formüller ve Teknik Bilgileri Görüntüle">View Formulas & Technical Information</span> →
+            </a>
+        </p>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Plotly.js for 3D Visualizations -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="{{ url_for('static', filename='js/impactMap.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>
+
