@@ -526,7 +526,7 @@ function initializeUSGSTopoMap() {
     // USGS Topografik Harita oluştur
     usgsTopoMap = L.map('usgsTopoMap', {
         center: [39.0, -98.0], // ABD merkezi
-        zoom: 5,
+        zoom: 3, // Daha geniş görünüm için zoom seviyesini düşürdük
         zoomControl: true,
         scrollWheelZoom: true,
         doubleClickZoom: true,
@@ -570,8 +570,8 @@ function initializeUSGSTopoMap() {
 // USGS haritasını güncelleme fonksiyonu (impact location değiştiğinde)
 function updateUSGSMapLocation(lat, lng) {
     if (usgsTopoMap) {
-        // Haritayı yeni konuma odakla
-        usgsTopoMap.setView([lat, lng], 10);
+        // Haritayı yeni konuma odakla - daha geniş görünüm için zoom seviyesini düşürdük
+        usgsTopoMap.setView([lat, lng], 6);
         
         // Tüm marker'ları temizle
         usgsTopoMap.eachLayer(layer => {
@@ -593,7 +593,7 @@ function updateUSGSMapLocation(lat, lng) {
     
     // USGS Imagery Map'i de güncelle
     if (usgsImageryMap) {
-        usgsImageryMap.setView([lat, lng], 10);
+        usgsImageryMap.setView([lat, lng], 6);
         
         // Tüm marker'ları temizle
         usgsImageryMap.eachLayer(layer => {
@@ -628,7 +628,7 @@ function initializeUSGSImageryMap() {
     // USGS Imagery Topo Harita oluştur
     usgsImageryMap = L.map('usgsImageryMap', {
         center: [39.0, -98.0], // ABD merkezi
-        zoom: 5,
+        zoom: 3, // Daha geniş görünüm için zoom seviyesini düşürdük
         zoomControl: true,
         scrollWheelZoom: true,
         doubleClickZoom: true,

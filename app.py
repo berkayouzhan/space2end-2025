@@ -1440,17 +1440,95 @@ def check_ocean_with_geonames(lat, lng):
     """
     try:
         url = f'http://api.geonames.org/oceanJSON?lat={lat}&lng={lng}&username={GEONAMES_USERNAME}'
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, timeout=3)
         response.raise_for_status()
         data = response.json()
         
         if 'ocean' in data and 'name' in data['ocean']:
+            print(f"[OK] GeoNames API: {lat:.2f}, {lng:.2f} -> {data['ocean']['name']} (Ocean)")
             return True, data['ocean']['name']
         else:
+            print(f"[OK] GeoNames API: {lat:.2f}, {lng:.2f} -> Land")
             return False, "Land"
     except Exception as e:
-        print(f"GeoNames Ocean API Error: {e}")
+        print(f"[WARN] GeoNames Ocean API Error: {e}")
         # API başarısız olursa fallback kullan
+        return None, None
+
+
+def check_water_with_reverse_geocoding(lat, lng):
+    """
+    Reverse geocoding ile noktanın su mu kara mı olduğunu kontrol eder
+    Nominatim API kullanarak daha kesin sonuç
+    """
+    try:
+        # Nominatim reverse geocoding API
+        url = f'https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lng}&zoom=10&addressdetails=1'
+        headers = {
+            'User-Agent': 'AsteroidImpactVisualizer/1.0 (Educational Project)'
+        }
+        
+        response = requests.get(url, headers=headers, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        if 'error' in data:
+            print(f"[WARN] Nominatim API Error: {data['error']}")
+            return None, None
+        
+        # Adres detaylarını kontrol et
+        address = data.get('address', {})
+        display_name = data.get('display_name', '').lower()
+        
+        # Su ile ilgili anahtar kelimeler
+        water_keywords = [
+            'ocean', 'sea', 'lake', 'bay', 'gulf', 'strait', 'channel', 'sound',
+            'harbor', 'harbour', 'port', 'marina', 'beach', 'coast', 'shore',
+            'water', 'aquatic', 'marine', 'nautical'
+        ]
+        
+        # Land ile ilgili anahtar kelimeler
+        land_keywords = [
+            'city', 'town', 'village', 'municipality', 'state', 'province',
+            'country', 'continent', 'island', 'peninsula', 'mountain', 'hill',
+            'forest', 'park', 'residential', 'commercial', 'industrial'
+        ]
+        
+        # Adres bileşenlerini kontrol et
+        address_text = ' '.join(str(v).lower() for v in address.values() if v)
+        full_text = f"{display_name} {address_text}"
+        
+        # Su anahtar kelimelerini kontrol et
+        water_score = sum(1 for keyword in water_keywords if keyword in full_text)
+        land_score = sum(1 for keyword in land_keywords if keyword in full_text)
+        
+        print(f"[NOMINATIM] Water score: {water_score}, Land score: {land_score}")
+        print(f"[NOMINATIM] Address: {display_name[:100]}...")
+        
+        # Karar verme mantığı
+        if water_score > land_score and water_score > 0:
+            # Su türünü belirle
+            if any(word in full_text for word in ['ocean', 'pacific', 'atlantic', 'indian', 'arctic']):
+                ocean_type = "Ocean"
+            elif any(word in full_text for word in ['sea', 'mediterranean', 'black', 'red', 'caspian']):
+                ocean_type = "Sea"
+            elif any(word in full_text for word in ['bay', 'gulf', 'persian', 'mexican']):
+                ocean_type = "Bay/Gulf"
+            else:
+                ocean_type = "Water Body"
+            
+            print(f"[NOMINATIM] ✅ WATER DETECTED: {ocean_type}")
+            return True, ocean_type
+        elif land_score > water_score:
+            print(f"[NOMINATIM] ❌ LAND DETECTED")
+            return False, "Land"
+        else:
+            # Belirsiz durum - koordinat bazlı fallback kullan
+            print(f"[NOMINATIM] ❓ UNCLEAR - Using coordinate fallback")
+            return None, None
+            
+    except Exception as e:
+        print(f"[WARN] Nominatim API Error: {e}")
         return None, None
 
 
@@ -1462,6 +1540,8 @@ def fallback_ocean_check(impact_lat, impact_lng):
     is_ocean = False
     ocean_name = "Unknown"
     
+    print(f"[FALLBACK] Checking coordinates: {impact_lat:.2f}, {impact_lng:.2f}")
+    
     # Kutup bölgeleri - büyük ölçüde okyanus (Antarktika hariç)
     if impact_lat < -65:
         # Güney Kutbu - Antarktika ve çevresi
@@ -1469,31 +1549,39 @@ def fallback_ocean_check(impact_lat, impact_lng):
             # Antarktika kıtası olabilir
             ocean_name = "Antarctic Region (Land/Ice)"
             is_ocean = False
+            print(f"[FALLBACK] Antarctic land: {ocean_name}")
         else:
             # Güney Okyanusu
             is_ocean = True
             ocean_name = "Southern Ocean"
+            print(f"[FALLBACK] Southern Ocean: {ocean_name}")
     
     elif impact_lat > 70:
         # Kuzey Kutbu - Arctic Ocean
         is_ocean = True
         ocean_name = "Arctic Ocean"
+        print(f"[FALLBACK] Arctic Ocean: {ocean_name}")
     
-    # Pasifik Okyanusu (En büyük okyanus - geniş enlem aralığı)
-    # GENİŞLETİLMİŞ: Daha fazla koordinat aralığı
-    elif (-65 < impact_lat < 65) and ((100 < impact_lng <= 180) or (-180 < impact_lng < -60)):
-        is_ocean = True
-        ocean_name = "Pacific Ocean"
-    
-    # Atlantik Okyanusu (Kuzey ve Güney Atlantik)
-    elif (-65 < impact_lat < 70) and (-60 < impact_lng < -10):
+    # Atlantik Okyanusu (Kuzey ve Güney Atlantik) - ÖNCELİK
+    elif (-65 < impact_lat < 70) and (-80 < impact_lng < 20):
         is_ocean = True
         ocean_name = "Atlantic Ocean"
+        print(f"[FALLBACK] Atlantic Ocean: {ocean_name}")
+    
+    # Pasifik Okyanusu (En büyük okyanus - GENİŞLETİLMİŞ)
+    # Pasifik neredeyse tüm 180° meridyenini kapsıyor
+    # Doğu Pasifik: -180° ile -70° arası (Güney Amerika kıyısına kadar)
+    # Batı Pasifik: 100° ile 180° arası (Asya kıyısından başlar)
+    elif (-65 < impact_lat < 65) and ((100 < impact_lng <= 180) or (-180 <= impact_lng < -70)):
+        is_ocean = True
+        ocean_name = "Pacific Ocean"
+        print(f"[FALLBACK] Pacific Ocean: {ocean_name}")
     
     # Hint Okyanusu (Güney Asya, Afrika arası)
     elif (-65 < impact_lat < 25) and (20 < impact_lng < 120):
         is_ocean = True
         ocean_name = "Indian Ocean"
+        print(f"[FALLBACK] Indian Ocean: {ocean_name}")
     
     # Akdeniz
     elif (30 < impact_lat < 44) and (-6 < impact_lng < 36):
@@ -1513,33 +1601,39 @@ def fallback_ocean_check(impact_lat, impact_lng):
         if not is_land:
             is_ocean = True
             ocean_name = "Mediterranean Sea"
+            print(f"[FALLBACK] Mediterranean Sea: {ocean_name}")
     
     # Karadeniz
     elif (41 < impact_lat < 47) and (27 < impact_lng < 42):
         is_ocean = True
         ocean_name = "Black Sea"
+        print(f"[FALLBACK] Black Sea: {ocean_name}")
     
     # Kızıldeniz
     elif (12 < impact_lat < 30) and (32 < impact_lng < 44):
         is_ocean = True
         ocean_name = "Red Sea"
+        print(f"[FALLBACK] Red Sea: {ocean_name}")
     
     # Basra Körfezi
     elif (24 < impact_lat < 30) and (48 < impact_lng < 57):
         is_ocean = True
         ocean_name = "Persian Gulf"
+        print(f"[FALLBACK] Persian Gulf: {ocean_name}")
     
     # Eğer hiçbir okyanusa uymuyorsa kara
     if not is_ocean:
         ocean_name = "Land"
+        print(f"[FALLBACK] No ocean match, defaulting to: {ocean_name}")
     
+    print(f"[FALLBACK] Final result: {ocean_name} (Ocean: {is_ocean})")
     return is_ocean, ocean_name
 
 
 def check_tsunami_risk(impact_lat, impact_lng, crater_diameter_km, kinetic_energy_joules):
     """
     Tsunami riskini kontrol eder
-    GeoNames API ile gerçek okyanus/deniz tespiti yapar
+    Çoklu API ile gerçek okyanus/deniz tespiti yapar
     """
     # Koordinat normalizasyonu: Boylam -180 ile 180 arasında olmalı
     while impact_lng > 180:
@@ -1547,24 +1641,46 @@ def check_tsunami_risk(impact_lat, impact_lng, crater_diameter_km, kinetic_energ
     while impact_lng < -180:
         impact_lng += 360
     
-    # ÖNCELİKLE: GeoNames API ile gerçek kontrol yap
-    api_is_ocean, api_ocean_name = check_ocean_with_geonames(impact_lat, impact_lng)
+    print(f"[DEBUG] Checking water/land for coordinates: {impact_lat:.2f}, {impact_lng:.2f}")
     
-    if api_is_ocean is not None:
-        # API başarılı - gerçek veriyi kullan
-        is_ocean = api_is_ocean
-        ocean_name = api_ocean_name
-        try:
-            print(f"[OK] GeoNames API: Lat={impact_lat:.2f}, Lng={impact_lng:.2f} -> {ocean_name} (Ocean: {is_ocean})")
-        except:
-            pass
+    # ÖNCE FALLBACK KONTROLÜ YAP (en güvenilir)
+    fallback_is_ocean, fallback_ocean_name = fallback_ocean_check(impact_lat, impact_lng)
+    print(f"[FALLBACK] Coordinate-based check: {fallback_ocean_name} (Ocean: {fallback_is_ocean})")
+    
+    # 1. Nominatim Reverse Geocoding ile doğrula
+    print(f"[STEP 1] Verifying with Nominatim reverse geocoding...")
+    nominatim_is_ocean, nominatim_ocean_name = check_water_with_reverse_geocoding(impact_lat, impact_lng)
+    
+    if nominatim_is_ocean is not None and nominatim_is_ocean == fallback_is_ocean:
+        # Nominatim fallback ile uyuşuyor - kesin sonuç
+        is_ocean = nominatim_is_ocean
+        ocean_name = nominatim_ocean_name
+        print(f"[OK] Nominatim CONFIRMED: {ocean_name} (Ocean: {is_ocean})")
+    elif nominatim_is_ocean is not None and nominatim_is_ocean != fallback_is_ocean:
+        # Çelişki var - fallback'e güven (GeoNames sık hata yapıyor)
+        print(f"[WARNING] Nominatim conflicts with fallback! Using fallback (more reliable)")
+        is_ocean = fallback_is_ocean
+        ocean_name = fallback_ocean_name
     else:
-        # API başarısız - fallback koordinat kontrolü
-        try:
-            print(f"[WARN] GeoNames API unavailable, using fallback coordinate check")
-        except:
-            pass
-        is_ocean, ocean_name = fallback_ocean_check(impact_lat, impact_lng)
+        # 2. GeoNames Ocean API ile doğrula
+        print(f"[STEP 2] Verifying with GeoNames Ocean API...")
+        api_is_ocean, api_ocean_name = check_ocean_with_geonames(impact_lat, impact_lng)
+        
+        if api_is_ocean is not None and api_is_ocean == fallback_is_ocean:
+            # GeoNames fallback ile uyuşuyor
+            is_ocean = api_is_ocean
+            ocean_name = api_ocean_name
+            print(f"[OK] GeoNames CONFIRMED: {ocean_name} (Ocean: {is_ocean})")
+        elif api_is_ocean is not None and api_is_ocean != fallback_is_ocean:
+            # Çelişki - yine fallback'e güven
+            print(f"[WARNING] GeoNames conflicts with fallback! Using fallback (more reliable)")
+            is_ocean = fallback_is_ocean
+            ocean_name = fallback_ocean_name
+        else:
+            # 3. API'ler yanıt vermedi - sadece fallback kullan
+            print(f"[FINAL] Using coordinate-based fallback only")
+            is_ocean = fallback_is_ocean
+            ocean_name = fallback_ocean_name
     
     tsunami_risk = "None"
     tsunami_height_m = 0
@@ -1932,6 +2048,18 @@ def calculate_impact():
         
         # Tsunami riski kontrolü (önce bunu yap çünkü is_ocean bilgisi gerekli)
         tsunami_data = check_tsunami_risk(impact_lat, impact_lng, crater_diameter_m / 1000, kinetic_energy_joules)
+        
+        # DEBUG: Tsunami verilerini konsola yazdır
+        print("\n" + "="*60)
+        print("TSUNAMI FINAL RESULT")
+        print("="*60)
+        print("Impact Location: Lat={:.2f}, Lng={:.2f}".format(impact_lat, impact_lng))
+        print("Is Ocean Impact: {}".format(tsunami_data['is_ocean_impact']))
+        print("Location Type: {}".format(tsunami_data['location_type']))
+        print("Tsunami Height: {} m".format(tsunami_data['tsunami_height_m']))
+        print("Tsunami Range: {} km".format(tsunami_data['tsunami_range_km']))
+        print("Tsunami Risk: {}".format(tsunami_data['tsunami_risk']))
+        print("="*60 + "\n")
         
         # Popülasyon etkisi tahmini (okyanus bilgisi ve tsunami parametreleri ile)
         population_impact = estimate_population_affected(

@@ -470,6 +470,18 @@ COMETS = {
         'orbital_period': 49272,
         'miss_distance_km': 130000000,
         'description': 'Perseid meteor yağmurunun kaynağı, büyük ve hızlı, gelecek tehdit'
+    },
+    'atlas': {
+        'id': 'C/2019 Y4',
+        'name': "3I/Atlas",
+        'diameter_m': 1000,
+        'velocity_ms': 42000,
+        'velocity_kmh': 151200,
+        'is_hazardous': False,
+        'absolute_magnitude': 9.5,
+        'orbital_period': -1,
+        'miss_distance_km': 117000000,
+        'description': 'C/2019 Y4 (ATLAS) - 2020 yılında parçalanan kuyruklu yıldız, yıldızlararası kökenli olabilir'
     }
 }
 

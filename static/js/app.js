@@ -827,11 +827,48 @@ function displaySimulationResults(impactData, seismicData) {
     
     const atmo = impactData.atmospheric_entry;
     
+    // DEBUG: Console log tsunami data
+    console.log('🌊 TSUNAMI DEBUG:', impactData.tsunami_data);
+    console.log('🌊 Is Ocean Impact:', impactData.tsunami_data.is_ocean_impact);
+    console.log('🌊 Location Type:', impactData.tsunami_data.location_type);
+    console.log('🌊 Tsunami Height:', impactData.tsunami_data.tsunami_height_m);
+    
     // YENİ SONUÇ FORMATI - SADECE TEMEL BİLGİLER + DETAYLAR
     const html = `
         <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15)); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid var(--primary-color);">
             <h3 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">🎯 ${t('basicInfo')}</h3>
         </div>
+        
+        <!-- TSUNAMI KONTROL - ÖN SIRADA -->
+        ${impactData.tsunami_data && impactData.tsunami_data.is_ocean_impact ? `
+        <div style="background: linear-gradient(135deg, rgba(52, 168, 83, 0.2), rgba(59, 130, 246, 0.2)); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 3px solid #34a853;">
+            <h3 style="margin: 0 0 1rem 0; color: #34a853; font-size: 1.3rem;">🌊 TSUNAMI EFFECT DETECTED!</h3>
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+                    <strong>📍 Impact Location:</strong> ${impactData.tsunami_data.location_type}
+                </div>
+                <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+                    <strong>🌊 Tsunami Height:</strong> <span style="color: #ea4335; font-size: 1.3rem; font-weight: 700;">${impactData.tsunami_data.tsunami_height_m.toFixed(1)} meters</span>
+                </div>
+                <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+                    <strong>📏 Tsunami Range:</strong> ${impactData.tsunami_data.tsunami_range_km.toFixed(0)} km
+                </div>
+                <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+                    <strong>⚠️ Risk Level:</strong> <span style="color: ${impactData.tsunami_data.tsunami_risk === 'Extreme' ? '#ea4335' : impactData.tsunami_data.tsunami_risk === 'High' ? '#ff9800' : '#fbbc04'}; font-weight: 700;">${impactData.tsunami_data.tsunami_risk}</span>
+                </div>
+            </div>
+            <div style="background: rgba(234, 67, 53, 0.2); padding: 1rem; border-radius: 6px; border-left: 4px solid #ea4335;">
+                <strong>⚠️ WARNING:</strong> ${impactData.tsunami_data.warning}
+            </div>
+        </div>
+        ` : `
+        <div style="background: rgba(139, 69, 19, 0.2); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #8B4513;">
+            <strong>🏔️ LAND IMPACT</strong> - No Tsunami Risk
+            <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                Location: ${impactData.tsunami_data.location_type || 'Land'}
+            </div>
+        </div>
+        `}
         
         <div class="result-item">
             <div class="result-label">${t('tntEquivalent')}:</div>
@@ -904,6 +941,26 @@ function displaySimulationResults(impactData, seismicData) {
                 🌊 ${t('oceanImpact')} - ${impactData.tsunami_data.location_type}
             </div>
         </div>
+        
+        ${impactData.tsunami_data.tsunami_height_m > 0 ? `
+        <div class="result-item danger-message">
+            <div class="result-label">🌊 ${t('tsunamiHeight')}:</div>
+            <div class="result-value" style="font-size: 1.2rem; color: var(--danger-color);">
+                ${impactData.tsunami_data.tsunami_height_m.toFixed(1)} m
+            </div>
+        </div>
+        
+        <div class="result-item">
+            <div class="result-label">📏 ${t('tsunamiRange')}:</div>
+            <div class="result-value">${impactData.tsunami_data.tsunami_range_km.toFixed(0)} km</div>
+        </div>
+        
+        <div class="result-item">
+            <div class="result-value" style="background: rgba(234, 67, 53, 0.1); padding: 0.75rem; border-radius: 6px; border-left: 4px solid var(--danger-color);">
+                ⚠️ ${impactData.tsunami_data.warning}
+            </div>
+        </div>
+        ` : ''}
         ` : `
         <div class="result-item" style="background: rgba(52, 168, 83, 0.1); padding: 0.5rem; border-radius: 6px;">
             <div class="result-label" style="font-size: 0.85rem;">
@@ -962,15 +1019,14 @@ function displaySimulationResults(impactData, seismicData) {
         </div>
         ` : ''}
         
-        ${impactData.tsunami_data.is_ocean_impact ? `
-        <div class="result-item">
-            <div class="result-value">${impactData.tsunami_data.warning}</div>
+        ${impactData.population_impact.tsunami_casualties > 0 ? `
+        <div class="result-item danger-message">
+            <div class="result-label">⚠️ ${t('tsunamiCasualties')}:</div>
+            <div class="result-value" style="font-size: 1.2rem; font-weight: 700;">
+                ${formatNumber(impactData.population_impact.tsunami_casualties)} ${t('people')}
+            </div>
         </div>
-        ` : `
-        <div class="result-item">
-            <div class="result-value">${t('noTsunamiRisk')}</div>
-        </div>
-        `}
+        ` : ''}
         
         <hr style="margin: 1.5rem 0; border: 2px solid var(--border-color);">
         
@@ -1233,6 +1289,9 @@ const translations = {
         people: 'people',
         regionDensity: 'Region Density',
         tsunamiRisk: 'Tsunami Risk',
+        tsunamiHeight: 'Tsunami Height',
+        tsunamiRange: 'Tsunami Range',
+        tsunamiCasualties: 'Tsunami Casualties',
         impactLocation: 'Impact Location',
         coordinates: 'Coordinates',
         detailedInfo: 'Detailed Information',
@@ -1286,6 +1345,9 @@ const translations = {
         people: 'kişi',
         regionDensity: 'Bölge Yoğunluğu',
         tsunamiRisk: 'Tsunami Riski',
+        tsunamiHeight: 'Tsunami Yüksekliği',
+        tsunamiRange: 'Tsunami Menzili',
+        tsunamiCasualties: 'Tsunami Kayıpları',
         impactLocation: 'Çarpma Yeri',
         coordinates: 'Koordinatlar',
         detailedInfo: 'Detaylı Bilgiler',
