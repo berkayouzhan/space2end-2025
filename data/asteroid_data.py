@@ -472,16 +472,16 @@ COMETS = {
         'description': 'Perseid meteor yağmurunun kaynağı, büyük ve hızlı, gelecek tehdit'
     },
     'atlas': {
-        'id': 'C/2019 Y4',
-        'name': "3I/Atlas",
+        'id': '3I/2025',
+        'name': "3I/ATLAS",
         'diameter_m': 1000,
         'velocity_ms': 42000,
         'velocity_kmh': 151200,
         'is_hazardous': False,
         'absolute_magnitude': 9.5,
         'orbital_period': -1,
-        'miss_distance_km': 117000000,
-        'description': 'C/2019 Y4 (ATLAS) - 2020 yılında parçalanan kuyruklu yıldız, yıldızlararası kökenli olabilir'
+        'miss_distance_km': 270000000,
+        'description': '3I/ATLAS Kuyrukluyıldızı - Dünya için tehdit oluşturmaz, en yakın mesafe 1.8 AU (270 milyon km). Güneşe en yakın 30 Ekim 2025, 1.4 AU mesafede (Mars yörüngesinin hemen içinde)'
     }
 }
 
